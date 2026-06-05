@@ -47,5 +47,8 @@ describe('Ecosistema Suite - Pruebas de Autenticación y Compra', () => {
     // 7. Confirmar que la compra fue exitosa
     cy.url().should('include', '/checkout-complete.html');
     cy.get('.complete-header').should('contain', 'Thank you for your order!');
+
+    // Tomar una captura de pantalla como evidencia de la compra exitosa para visualizarla en Jenkins
+    cy.screenshot('evidencia-compra-exitosa');
   });
 });

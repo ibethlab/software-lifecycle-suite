@@ -15,8 +15,8 @@ pipeline {
             steps {
                 echo 'Instalando librerías del sistema operativo para entorno virtualizado...'
                 sh '''
-                    sudo apt-get update || apt-get update
-                    sudo apt-get install -y xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libasound2t64 libxtst6 xauth dbus-x11
+                    apt-get update || apt-get update
+                    apt-get install -y xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libasound2t64 libxtst6 xauth dbus-x11
                 '''
             }
         }

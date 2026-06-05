@@ -7,7 +7,33 @@ describe('Ecosistema Suite - Pruebas de Autenticación y Compra', () => {
     cy.get('[data-test="password"]').type('secret_sauce');
     cy.get('[data-test="login-button"]').click();
     cy.url().should('include', '/inventory.html');
-    cy.get('.title').should('contain', 'Products');
+    cy.get('.title').should('contain', 'Products'); 
+  });
+  // Control de errores: Credenciales incorrectas
+  it('Validar el mensaje de error al intentar iniciar sesión con datos inválidos', () => {
+    cy.visit('https://www.saucedemo.com/');
+    cy.get('[data-test="username"]').type('usuario_no_existente');
+    cy.get('[data-test="password"]').type('clave_incorrecta');
+    cy.get('[data-test="login-button"]').click();
+
+    // Validamos que aparezca el contenedor de error y el texto esperado del sistema
+    cy.get('[data-test="error"]').should('be.visible')
+      .and('contain', 'Epic sadface: Username and password do not match any user in this service');
+  });
+
+  // Interactividad: Filtrado de productos por precio
+  it('Filtrar productos de menor a mayor precio y verificar el ordenamiento', () => {
+    // Inicio de sesión rápido
+    cy.visit('https://www.saucedemo.com/');
+    cy.get('[data-test="username"]').type('standard_user');
+    cy.get('[data-test="password"]').type('secret_sauce');
+    cy.get('[data-test="login-button"]').click();
+
+    // Interactua con el selector/dropdown de ordenamiento por precio (lohi = low to high)
+    cy.get('[data-test="product-sort-container"]').select('lohi');
+
+    // Validamos que el primer producto de la lista sea el más económico ($7.99)
+    cy.get('.inventory_item_price').first().should('contain', '$7.99');
   });
 
   // Flujo completo de compra

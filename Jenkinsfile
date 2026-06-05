@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Preparar Sistema') {
             steps {
-                // Actualizamos los repositorios del Linux de Jenkins e instalamos las dependencias del sistema
+                // Actualiza los repositorios del Linux de Jenkins e instala las dependencias del sistema
                 sh '''
                     echo "Instalando dependencias del sistema operativo para Cypress..."
                     sudo apt-get update || apt-get update
@@ -16,7 +16,14 @@ pipeline {
                 '''
             }
         }
-
+        stage('Security Scan') {
+            steps {
+                dir('testing') {
+                    // Ejecuta una auditoría de seguridad nativa de Node.js
+                    sh 'npm audit --audit-level=high || true'
+                }
+            }
+        }
         stage('Instalar y Probar') {
             steps {
                 dir('testing') {
@@ -33,7 +40,7 @@ pipeline {
                 }
                 success {
                     // Alerta automatizada hacia n8n mediante cURL para indicar que las pruebas en la suite principal se han ejecutado con éxito
-                    sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://host.docker.internal:5678/webhook-test/jenkins-cypress-alert'
+                    sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://host.docker.internal:5678/webhook/jenkins-cypress-alert'
                 }
             }
         }

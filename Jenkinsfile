@@ -31,6 +31,10 @@ pipeline {
                     // Capturas en Jenkins de los screenshots y videos generados por Cypress, incluso si las pruebas fallan
                     archiveArtifacts artifacts: 'testing/cypress/screenshots/**/*, testing/cypress/videos/**/*', allowEmptyArchive: true
                 }
+                success {
+                    // Alerta automatizada hacia n8n mediante cURL para indicar que las pruebas en la suite principal se han ejecutado con éxito
+                    sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://localhost:5678/webhook-test/jenkins-cypress-alert'
+                }
             }
         }
     }

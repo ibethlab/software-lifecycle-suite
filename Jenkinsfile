@@ -1,45 +1,61 @@
 pipeline {
     agent any
-
-    tools {
-        nodejs 'Node20'
-    }
-
+    tools { nodejs 'Node20' }
     stages {
-        stage('Preparar Sistema') {
+        // ETAPA 1: Descarga y verificación del código fuente
+        stage('1. Checkout SCM') {
             steps {
-                // Actualiza los repositorios del Linux de Jenkins e instala las dependencias del sistema
+                echo 'Verificando repositorio y descargando última versión del código...'
+                checkout scm
+            }
+        }
+        
+        // ETAPA 2: Preparación del entorno y dependencias del sistema operativo
+        stage('2. OS Environment Setup') {
+            steps {
+                echo 'Instalando librerías del sistema operativo para entorno virtualizado...'
                 sh '''
-                    echo "Instalando dependencias del sistema operativo para Cypress..."
                     sudo apt-get update || apt-get update
-                    sudo apt-get install -y xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth dbus-x11 || apt-get install -y xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libasound2t64 libxtst6 xauth dbus-x11
+                    sudo apt-get install -y xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libasound2t64 libxtst6 xauth dbus-x11
                 '''
             }
         }
-        stage('Security Scan') {
+        
+        // ETAPA 3: Auditoría y escaneo de vulnerabilidades (DevSecOps)
+        stage('3. DevSecOps Security Scan') {
             steps {
+                echo 'Ejecutando auditoría de seguridad sobre dependencias de Node.js...'
                 dir('testing') {
-                    // Ejecuta una auditoría de seguridad nativa de Node.js
                     sh 'npm audit --audit-level=high || true'
                 }
             }
         }
-        stage('Instalar y Probar') {
+        
+        // ETAPA 4: Instalación de dependencias del proyecto (Node/Cypress)
+        stage('4. Install Project Dependencies') {
             steps {
+                echo 'Instalando paquetes de npm y Cypress...'
                 dir('testing') {
-                    //Instalamos las dependencias
                     sh 'npm install'
-                    // Ejecutamos Cypress envuelto en la pantalla virtual xvfb-run
+                }
+            }
+        }
+        
+        // ETAPA 5: Ejecución de la suite completa de pruebas (UI & API)
+        stage('5. Execute Automation Tests') {
+            steps {
+                echo 'Iniciando servidor de pantalla virtual y ejecutando Cypress...'
+                dir('testing') {
                     sh 'xvfb-run --server-args="-screen 0 1280x1024x24" npx cypress run --headless'
                 }
             }
-            post{
+            post {
                 always {
-                    // Capturas en Jenkins de los screenshots y videos generados por Cypress, incluso si las pruebas fallan
+                    echo 'Archivando evidencias visuales generadas por Cypress...'
                     archiveArtifacts artifacts: 'testing/cypress/screenshots/**/*, testing/cypress/videos/**/*', allowEmptyArchive: true
                 }
                 success {
-                    // Alerta automatizada hacia n8n mediante cURL para indicar que las pruebas en la suite principal se han ejecutado con éxito
+                    echo 'Disparando Webhook de éxito hacia el orquestador n8n...'
                     sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://host.docker.internal:5678/webhook/jenkins-cypress-alert'
                 }
             }

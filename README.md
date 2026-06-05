@@ -23,3 +23,6 @@ graph LR
     D --> E[Artifacts Archiving]
     E --> F[Webhook - n8n]
     F --> G[Gmail Notification]
+
+## 🔗 Conexión con el Ecosistema de Gestión
+La planificación de las pruebas, el control de la matriz de trazabilidad y el estado del ciclo de vida de este software se gestionan activamente en el repositorio de gobierno: [QA Management Workflow](https://github.com/ibethlab/qa-management-workflow).

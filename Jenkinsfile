@@ -5,8 +5,8 @@ pipeline {
         stage('Instalar y Probar') {
             steps {
                 dir('testing') {
-                    bat 'npm install'
-                    bat 'npx cypress run'
+                    sh 'npm install'
+                    sh 'npx cypress run'
                 }
             }
         }

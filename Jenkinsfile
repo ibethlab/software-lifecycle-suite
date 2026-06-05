@@ -2,17 +2,28 @@ pipeline {
     agent any
 
     tools {
-        // Jenkins "Node20" recien configurado para usar Node.js
         nodejs 'Node20'
     }
 
     stages {
+        stage('Preparar Sistema') {
+            steps {
+                // Actualizamos los repositorios del Linux de Jenkins e instalamos las dependencias del sistema
+                sh '''
+                    echo "Instalando dependencias del sistema operativo para Cypress..."
+                    sudo apt-get update || apt-get update
+                    sudo apt-get install -y xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth dbus-x11 || apt-get install -y xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libasound2t64 libxtst6 xauth dbus-x11
+                '''
+            }
+        }
+
         stage('Instalar y Probar') {
             steps {
                 dir('testing') {
-                    // Instalar dependencias y ejecutar pruebas Cypress
+                    //Instalamos las dependencias
                     sh 'npm install'
-                    sh 'npx cypress run --headless --browser electron'
+                    // Ejecutamos Cypress envuelto en la pantalla virtual xvfb-run
+                    sh 'xvfb-run --server-args="-screen 0 1280x1024x24" npx cypress run --headless'
                 }
             }
         }

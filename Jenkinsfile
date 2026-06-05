@@ -33,7 +33,7 @@ pipeline {
                 }
                 success {
                     // Alerta automatizada hacia n8n mediante cURL para indicar que las pruebas en la suite principal se han ejecutado con éxito
-                    sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://localhost:5678/webhook-test/jenkins-cypress-alert'
+                    sh 'curl -X POST -H "Content-Type: application/json" -d \'{"status": "SUCCESS", "project": "Ecosistema CI/CD", "message": "Las pruebas automatizadas en la suite principal se han ejecutado con éxito."}\' http://host.docker.internal:5678/webhook-test/jenkins-cypress-alert'
                 }
             }
         }

@@ -12,7 +12,7 @@ pipeline {
                 dir('testing') {
                     // Instalar dependencias y ejecutar pruebas Cypress
                     sh 'npm install'
-                    sh 'npx cypress run'
+                    sh 'npx cypress run --headless --browser electron'
                 }
             }
         }

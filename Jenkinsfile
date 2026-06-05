@@ -7,7 +7,7 @@ pipeline {
                 dir('testing') {
                     // Instalar dependencias
                     sh 'npm install'
-                    // Ejecutar pruebas
+                    // Ejecutar pruebass
                     sh 'npx cypress run'
                 }
             }

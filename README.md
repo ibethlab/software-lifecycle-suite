@@ -9,6 +9,10 @@ Ecosistema integrado de automatización de pruebas E2E y API, integración conti
 ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat&logo=javascript)
 ![n8n](https://img.shields.io/badge/-n8n-FF6F61?style=flat&logo=n8n)
 
+## DEMO
+
+![Demo del Pipeline](assets/pipeline-demo.gif)
+
 ## Arquitectura del Pipeline (CI/CD/DevSecOps)
 
 ```mermaid

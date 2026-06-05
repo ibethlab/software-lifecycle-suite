@@ -26,6 +26,12 @@ pipeline {
                     sh 'xvfb-run --server-args="-screen 0 1280x1024x24" npx cypress run --headless'
                 }
             }
+            post{
+                always {
+                    // Capturas en Jenkins de los screenshots y videos generados por Cypress, incluso si las pruebas fallan
+                    archiveArtifacts artifacts: 'testing/cypress/screenshots/**/*, testing/cypress/videos/**/*', allowEmptyArchive: true
+                }
+            }
         }
     }
 }

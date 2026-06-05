@@ -1,0 +1,12 @@
+# Dependencias (NUNCA se suben)
+node_modules/
+/testing/node_modules/
+
+# Evidencias locales de Cypress (videos y capturas de pantalla)
+/testing/cypress/videos/
+/testing/cypress/screenshots/
+
+# Archivos del sistema operativo o entorno
+.DS_Store
+Thumbs.db
+.env
